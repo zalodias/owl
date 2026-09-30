@@ -6,7 +6,7 @@ Owl is a simple, minimal analytics platform.
 
 ```bash
 docker compose up -d
-cp .env.example .env.local
+npm run db:migrate
 npm run dev
 ```
 
