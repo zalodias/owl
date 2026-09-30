@@ -1,5 +1,6 @@
 import { db } from '@/db/db';
 import { pageviews } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 import {
   clientIp,
   deviceClass,
@@ -23,6 +24,19 @@ export async function POST(request: Request) {
     typeof body.path !== 'string'
   ) {
     return Response.json({ ok: false }, { status: 400 });
+  }
+
+  if (typeof body.duration === 'number') {
+    if (!Number.isFinite(body.duration) || body.duration < 0) {
+      return Response.json({ ok: false }, { status: 400 });
+    }
+
+    await db
+      .update(pageviews)
+      .set({ duration: Math.round(body.duration) })
+      .where(eq(pageviews.id, body.id));
+
+    return Response.json({ ok: true });
   }
 
   const website = body.website.slice(0, 64);
