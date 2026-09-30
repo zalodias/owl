@@ -12,7 +12,12 @@
       headers: { 'content-type': 'text/plain' },
       body: JSON.stringify(body),
       keepalive: true,
-    });
+    }).then(
+      function (response) {
+        if (response.ok) window.dispatchEvent(new Event('owl:pageview'));
+      },
+      function () {},
+    );
   }
 
   function page() {
