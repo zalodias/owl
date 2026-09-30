@@ -3,12 +3,18 @@ import { pageviews } from '@/db/schema';
 import {
   clientIp,
   deviceClass,
+  isAutomated,
   pagePath,
   referrerHost,
   visitorHash,
 } from '@/lib/utils';
 
 export async function POST(request: Request) {
+  const userAgent = request.headers.get('user-agent') ?? '';
+  if (isAutomated(userAgent)) {
+    return Response.json({ ok: true });
+  }
+
   const body = await request.json().catch(() => null);
   if (
     !body ||
@@ -23,7 +29,6 @@ export async function POST(request: Request) {
   const path = pagePath(body.path);
   const referrer =
     typeof body.referrer === 'string' ? referrerHost(body.referrer) : null;
-  const userAgent = request.headers.get('user-agent') || '';
   const country = request.headers.get('x-vercel-ip-country');
 
   await db

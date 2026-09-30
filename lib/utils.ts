@@ -1,5 +1,12 @@
 export { cn } from 'cn';
 import { createHmac } from 'crypto';
+import { isbot } from 'isbot';
+
+export function isAutomated(userAgent: string) {
+  const identity = userAgent.trim();
+  if (!identity) return true;
+  return isbot(identity);
+}
 
 export function visitorHash(ip: string, userAgent: string) {
   const secret = process.env.HASH_SECRET;
